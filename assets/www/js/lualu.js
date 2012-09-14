@@ -45,12 +45,19 @@ function fixA(str){
 	return str;
 }
 function view(obj){
+	
 	setTimeout(function(){
+	
 		if (abc) {
-			$('#thelist>li').eq(1).html("<div class='detail_pic'><img src='" + obj.src.replace('!192', '') + "'></div>");
-			document.getElementById("thelist").style.webkitTransition = "all 0.5s ease-in-out";
+			
+			$('#thelist>li').eq(1).html("<div class='detail_pic'><img width="+_max+" src='" + obj.src + "'></div>");
+			document.getElementById("thelist").style.webkitTransition = "all 0.5s ease";
 			$('#thelist')[0].style.marginLeft = -$(window).width() + 'px';
-			myScroll.scrollTo(0,0);
+			
+			setTimeout(function(){
+				$('#thelist>li').eq(1).find('img').attr('src',obj.src.replace('!192', ''));
+				myScroll.scrollTo(0,0);
+			},500);
 		}
 	},300);
 	
@@ -122,7 +129,7 @@ function getData(offset,limit,album){
 				addImg(data[i],i);
 			}
 			var _height = Math.max.apply(null, [$(window).height(), Math.max.apply(null, arrimg)]);
-			$("#thelist>li").css("height", _height + 100 + 'px');
+			$("#thelist>li").css("height", _height + 50+ 'px');
 			nextoffset = (_offset == 0 ? _limit : _limit + _offset);
 		}
 	});
@@ -232,7 +239,7 @@ function loaded() {
 	$('#content1').css('height',($(window).height()-$('footer').height()-$('header').height()-12)+'px');
 
 	myScroll = new iScroll('wrapper', {
-	
+		useTransition:true,
 		checkDOMChanges: true,
 		topOffset: pullDownOffset,
 		onRefresh: function () {
@@ -313,6 +320,7 @@ function loaded() {
 			isDown = true;
 			beginX = pageX;
 			beginY = pageY;
+			abcY  = myScroll.y;
 			beginEl =e.target.tagName=='LI'?e.target:$(e.target).parents('li')[0];
 			beginM = (parseInt(document.getElementById("thelist").style.marginLeft)||0);
 			if(e.target.tagName=="IMG" && e.target.parentNode.className!="detail_pic"){
@@ -329,7 +337,7 @@ function loaded() {
 //			socket.emit('sendchat', v);
 			var pageX = (e.touches && e.touches[0])?e.touches[0].pageX:e.pageX;
 			var pageY = (e.touches && e.touches[0])?e.touches[0].pageY:e.pageY;
-			if (isDown && beginX && (Math.abs(pageX - beginX)>Math.abs(pageY - beginY))) {
+			if (!isDrag && isDown && beginX && (Math.abs(pageX - beginX)>Math.abs(pageY - beginY))) {
 				
 				isDrag = true;
 				fixXY=(pageX - beginX)>0?1:-1;
@@ -353,6 +361,7 @@ function loaded() {
 	document.getElementById('thelist').addEventListener(END_EV, function(e){
 			var pageX = (e.touches && e.touches[0])?e.touches[0].pageX:e.pageX;
 			var pageY = (e.touches && e.touches[0])?e.touches[0].pageY:e.pageY;
+
 			if (isDrag) {
 				beginX = 0;
 				var index = $('#thelist>li').index(beginEl) - fixXY;
@@ -364,10 +373,12 @@ function loaded() {
 					index = $('#thelist>li').length-1;
 				}
 				var w = index * $(window).width();
-				//socket.emit('sendchat',w);
+
 				document.getElementById("thelist").style.marginLeft = w * fixXY + 'px';
 				document.getElementById("thelist").style.webkitTransition = "all 0.5s ease-in-out";
-				myScroll.scrollTo(0,scrollTop);
+				setTimeout(function(){
+					myScroll.scrollTo(0,scrollTop);
+				},400);
 				setTimeout(function(){
 					abc=false;
 				},30);
@@ -375,35 +386,24 @@ function loaded() {
 			}else{
 				setTimeout(function(){
 					abc=false;
+					
 				},20);			
 			}
-			if(!(pageY-beginY)){
+			
+			if(!(myScroll.y-abcY)){
 				setTimeout(function(){
 					abc=true;
-					
-					
+					if(e.target.tagName=="IMG" && e.target.parentNode.className!="detail_pic"){
+						view(e.target);
+						scrollTop = myScroll.y;
+					}
 				},40);	
 			}
-			if(e.target.tagName=="IMG" && e.target.parentNode.className!="detail_pic"){
-				view(e.target);
-				scrollTop = myScroll.y;
-			}
+			
 			beginEl = null;
 			isDrag = false;
 			isDown = false;	
-//			if ( beginY) {
-//				pullDownEl.style.webkitTransition = "all 0.2s ease-in-out";
-//				pullDownEl.style.height =(0) +"px";
-//				setTimeout(function(){
-//					pullDownEl.style.webkitTransition = "";
-//					$('.pullDownLabel',pullDownEl).html($('.pullDownLabel',pullDownEl).attr('data-value'));
-//				},300);
-//				
-//			}	
 	}, false);
-//	document.getElementById("thelist").addEventListener("touchend", function(e){
-//			alert(1);
-//	}, false);
 }
 
 //document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
