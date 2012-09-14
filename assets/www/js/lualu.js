@@ -7,6 +7,7 @@ var  _limit = 0;
 var  _album = 0;
 var arrimg=[];
 var imgarr=[];
+var scrollTop=0;
 function getMinCol(){
 	var min = Math.min.apply(null,arrimg);
 	for(var i=0;i<arrimg.length;i++){
@@ -47,8 +48,9 @@ function view(obj){
 	setTimeout(function(){
 		if (abc) {
 			$('#thelist>li').eq(1).html("<div class='detail_pic'><img src='" + obj.src.replace('!192', '') + "'></div>");
-			document.getElementById("thelist").style.webkitTransition = "all 1s ease-in-out";
+			document.getElementById("thelist").style.webkitTransition = "all 0.5s ease-in-out";
 			$('#thelist')[0].style.marginLeft = -$(window).width() + 'px';
+			myScroll.scrollTo(0,0);
 		}
 	},300);
 	
@@ -67,7 +69,7 @@ function addImg(data,index){
 	playurl ="/play/"+data.id;
 
 
-		str = "<div class='pic_item' style='left:{$left}px;top:{$top}px;width:{$_width}px'><a  {$rel} href='###' ><img ontouchstart='view(this)' onclick='view(this)' width='{$_imgwidth}' height='{$h}' id='img_{$id}' class='scrollLoading' src='{$url}'  />{$vv}<div class='name'>{$desc}</div><div class='num'>共10张</div></a></div>";
+		str = "<div class='pic_item' style='left:{$left}px;top:{$top}px;width:{$_width}px'><a  {$rel} href='###' ><img width='{$_imgwidth}' height='{$h}' id='img_{$id}' class='scrollLoading' src='{$url}'  />{$vv}<div class='name'>{$desc}</div><div class='num'>共10张</div></a></div>";
 
 	var minCol = getMinCol();
 	
@@ -313,7 +315,10 @@ function loaded() {
 			beginY = pageY;
 			beginEl =e.target.tagName=='LI'?e.target:$(e.target).parents('li')[0];
 			beginM = (parseInt(document.getElementById("thelist").style.marginLeft)||0);
-			
+			if(e.target.tagName=="IMG" && e.target.parentNode.className!="detail_pic"){
+				//view(e.target);
+				scrollTop = myScroll.y;
+			}
 			document.getElementById("thelist").style.webkitTransition="";
 	}, false);
 	
@@ -361,7 +366,8 @@ function loaded() {
 				var w = index * $(window).width();
 				//socket.emit('sendchat',w);
 				document.getElementById("thelist").style.marginLeft = w * fixXY + 'px';
-				document.getElementById("thelist").style.webkitTransition = "all 1s ease-in-out";
+				document.getElementById("thelist").style.webkitTransition = "all 0.5s ease-in-out";
+				myScroll.scrollTo(0,scrollTop);
 				setTimeout(function(){
 					abc=false;
 				},30);
@@ -374,7 +380,13 @@ function loaded() {
 			if(!(pageY-beginY)){
 				setTimeout(function(){
 					abc=true;
+					
+					
 				},40);	
+			}
+			if(e.target.tagName=="IMG" && e.target.parentNode.className!="detail_pic"){
+				view(e.target);
+				scrollTop = myScroll.y;
 			}
 			beginEl = null;
 			isDrag = false;
