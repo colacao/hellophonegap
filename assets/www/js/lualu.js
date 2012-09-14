@@ -64,9 +64,9 @@ function view(obj){
 }
 function addImg(data,index){
 	
-	var _imgwidth = _max>350?224:150;
-	var _leftwidth = _max>350?237:160;
-	var _width =  _max>350?224:150;
+	var _imgwidth = _max>350?224:145;
+	var _leftwidth = _max>350?237:150;
+	var _width =  _max>350?224:145;
 	var rote = (data.w/_imgwidth);
 	var h = data.h*1?(parseInt(data.h/rote)):"auto";
 	var playurl="";
