@@ -395,5 +395,5 @@ function loaded() {
 }
 
 //document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
-
-document.addEventListener('deviceready', loaded, false);
+//document.addEventListener("DOMContentLoaded", loaded, false);
+document.addEventListener('DOMContentLoaded', function () { setTimeout(loaded, 200); }, false);
