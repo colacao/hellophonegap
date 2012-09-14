@@ -205,7 +205,7 @@ function getData(offset,limit,album){
 		dataType:'json',
 		success:function(data){
 	
-			if(data.length && !_offset){
+			if(data.length){
 				localStorage.setItem('lastdata',JSON.stringify(data));
 			}
 			
