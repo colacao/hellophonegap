@@ -47,7 +47,7 @@ function view(obj){
 	setTimeout(function(){
 		if (abc) {
 			$('#thelist>li').eq(1).html("<div class='detail_pic'><img src='" + obj.src.replace('!192', '') + "'></div>");
-			document.getElementById("thelist").style.webkitTransition = "all 0.5s ease-in-out";
+			document.getElementById("thelist").style.webkitTransition = "all 1s ease-in-out";
 			$('#thelist')[0].style.marginLeft = -$(window).width() + 'px';
 		}
 	},300);
@@ -67,7 +67,7 @@ function addImg(data,index){
 	playurl ="/play/"+data.id;
 
 
-		str = "<div class='pic_item' style='left:{$left}px;top:{$top}px;width:{$_width}px'><a  {$rel} href='###' ><img onclick='view(this)' width='{$_imgwidth}' height='{$h}' id='img_{$id}' class='scrollLoading' src='{$url}'  />{$vv}<div class='name'>{$desc}</div><div class='num'>共10张</div></a></div>";
+		str = "<div class='pic_item' style='left:{$left}px;top:{$top}px;width:{$_width}px'><a  {$rel} href='###' ><img ontouchstart='view(this)' onclick='view(this)' width='{$_imgwidth}' height='{$h}' id='img_{$id}' class='scrollLoading' src='{$url}'  />{$vv}<div class='name'>{$desc}</div><div class='num'>共10张</div></a></div>";
 
 	var minCol = getMinCol();
 	
@@ -361,7 +361,7 @@ function loaded() {
 				var w = index * $(window).width();
 				//socket.emit('sendchat',w);
 				document.getElementById("thelist").style.marginLeft = w * fixXY + 'px';
-				document.getElementById("thelist").style.webkitTransition = "all 0.5s ease-in-out";
+				document.getElementById("thelist").style.webkitTransition = "all 1s ease-in-out";
 				setTimeout(function(){
 					abc=false;
 				},30);
