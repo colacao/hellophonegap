@@ -22,7 +22,33 @@ function getMinCol(){
 }
 
 
+function down(){
+	//var ft = new FileTransfer();
+	//ft.upload(fileURI, $('.detail_pic img').attr('src'));
+	
+	
+	
+	// var aaa= $('.detail_pic img').attr('src').split('/');
+	
+	// var fileTransfer = new FileTransfer();
+	// for(var b in fileTransfer){
+		// alert(b);
+	// }
+	// var uri = encodeURI( $('.detail_pic img').attr('src'));
 
+	// fileTransfer.download(
+		// uri,
+		// aaa[aaa.length-1],
+		// function(entry) {
+			// console.log("download complete: " + entry.fullPath);
+		// },
+		// function(error) {
+			// console.log("download error source " + error.source);
+			// console.log("download error target " + error.target);
+			// console.log("upload error code" + error.code);
+		// }
+	// );
+}
 function httpSuccess(opid, result, data){
 	//return;
 	var b2 = new Date();
@@ -51,19 +77,76 @@ function view(obj){
 		if (abc) {
 			
 			$('#thelist>li').eq(1).html("<div class='detail_pic'><img width="+_max+" src='" + obj.src + "'></div>");
-			document.getElementById("thelist").style.webkitTransition = "all 0.5s ease";
+			document.getElementById("thelist").style.webkitTransition = "all 0.2s ease";
 			$('#thelist')[0].style.marginLeft = -$(window).width() + 'px';
 			
 			setTimeout(function(){
-				$('#thelist>li').eq(1).find('img').attr('src',obj.src.replace('!192', ''));
+				$('#thelist>li').eq(1).find('img').attr('src',obj.src.replace('!192', '').replace('!60', ''));
 				myScroll.scrollTo(0,0);
 			},500);
 		}
 	},300);
 	
 }
-function addImg(data,index){
+var getBoardItem = function(data,boardid){
 	
+	var strlist = '<img src="{$src}"/>';
+	var arr=[];
+	for(var i = 0;i<data.length;i++){
+		arr.push(strlist.replaceWith({
+			src:(data[i].domain?data[i].domain:"http://huaworld.b0.upaiyun.com/")+data[i].filename+'!60',
+			boardid:boardid
+		}))
+	}
+	return '<a href="###">'+arr.join('')+'</a>';
+};
+var addBoard = function (data,index){
+	
+	col = arrimg;
+	var _imgwidth = _max>350?224:145;
+	var _leftwidth = _max>350?237:150;
+	var _width =  _max>350?224:145;
+	var str = '<div class="pic_item" style="left:{$left}px;top:{$top}px;width:{$_width}px;height:191px">'+
+		'<div class="board_list" onclick="goboard({$board_id})">{$list}</div>'+
+		'<div class="name">{$board_name}</div>'+
+	'</div>';
+	var rote = 1;
+	var h = 275;
+	
+
+	var minCol = getMinCol(col);
+	
+	
+	var _left = _offset?(minCol.col)*_leftwidth:(index)%arrimg.length*_leftwidth;
+	_left= _left+10;
+	var _top = _offset?minCol.top:(arrimg[(index)%arrimg.length]?(arrimg[(index)%arrimg.length]):0);
+
+	str = str.replaceWith({
+		left:_left,
+		top:_top,
+		_width:_width,
+		repin:data.like_times,
+		board_id:data.id,
+		board_name:"<span style='display:none;'>("+data.pin_count+")</span>" + data.name ,
+		list:getBoardItem(data.data,data.id)
+		
+	});
+
+	
+	
+	var aa = $(str).appendTo($("#content1"));
+	if(_offset){
+		arrimg[minCol.col] += aa.height()+21;
+	}else{
+		arrimg[(index)%arrimg.length] += aa.height()+21;
+	}
+};
+
+function addImg(data,index){
+	if(data['data']){
+		addBoard(data,index);
+		return;
+	}
 	var _imgwidth = _max>350?224:145;
 	var _leftwidth = _max>350?237:150;
 	var _width =  _max>350?224:145;
@@ -76,7 +159,7 @@ function addImg(data,index){
 	playurl ="/play/"+data.id;
 
 
-		str = "<div class='pic_item' style='left:{$left}px;top:{$top}px;width:{$_width}px'><a  {$rel} href='###' ><img width='{$_imgwidth}' height='{$h}' id='img_{$id}' class='scrollLoading' src='{$url}'  />{$vv}<div class='name'>{$desc}</div><div class='num'>共10张</div></a></div>";
+		str = "<div class='pic_item' style='left:{$left}px;top:{$top}px;width:{$_width}px'><a  {$rel} href='###' ><img width='{$_imgwidth}' height='{$h}' id='img_{$id}' class='scrollLoading' src='{$url}'  />{$vv}<div class='name'>{$desc}</div></a></div>";
 
 	var minCol = getMinCol();
 	
@@ -118,14 +201,16 @@ function getData(offset,limit,album){
 	_album = album;
 	var b1= new Date();
 	$.ajax({
-		url:"http://huaworld.sinaapp.com/getpub.php?offset="+offset+"&limit="+limit+"&_nd="+(+new Date),
+		url:"http://huaworld.sinaapp.com/getlualu.php?offset="+offset+"&limit="+limit+"&_nd="+(+new Date),
 		dataType:'json',
 		success:function(data){
+	
 			if(data.length && !_offset){
 				localStorage.setItem('lastdata',JSON.stringify(data));
 			}
 			
 			for(var i=0;i<data.length;i++){
+			
 				addImg(data[i],i);
 			}
 			var _height = Math.max.apply(null, [$(window).height(), Math.max.apply(null, arrimg)]);
@@ -174,6 +259,7 @@ var beginM=0;
 var isDrag = false;
 var abc=true;
 var isDown = false;
+var fileSystem = null;
 var getScrollTop = function(node) {
 	var doc = node ? node.ownerDocument : document;
 	return doc.documentElement.scrollTop || doc.body.scrollTop;
@@ -183,6 +269,7 @@ var getScrollLeft = function(node) {
 	return doc.documentElement.scrollLeft || doc.body.scrollLeft;
 };
 function loaded() {
+
 
 	var icount = parseInt($(window).width()/237);
 	(function(){
@@ -375,7 +462,7 @@ function loaded() {
 				var w = index * $(window).width();
 
 				document.getElementById("thelist").style.marginLeft = w * fixXY + 'px';
-				document.getElementById("thelist").style.webkitTransition = "all 0.5s ease-in-out";
+				document.getElementById("thelist").style.webkitTransition = "all 0.2s ease-in-out";
 				setTimeout(function(){
 					myScroll.scrollTo(0,scrollTop);
 				},400);
