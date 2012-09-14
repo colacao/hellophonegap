@@ -54,35 +54,31 @@ function view(obj){
 	
 }
 function addImg(data,index){
-	var rote = (data.w/228);
+	
+	var _imgwidth = _max>350?228:150;
+	var _leftwidth = _max>350?237:160;
+	var _width =  _max>350?224:150;
+	var rote = (data.w/_imgwidth);
 	var h = data.h*1?(parseInt(data.h/rote)):"auto";
 	var playurl="";
 	var vv="";
 	var rel="";
 	var wh="";
 	playurl ="/play/"+data.id;
-	if(data['type']==4){
-		wh = ",,width=810,,height=610";
-		str = "<div class='pic_item ui-state-default' style='left:{$left}px;top:{$top}px;width:{$w}px;'><a href='###'  ><div style='padding: 0 5px;'>{$desc}</div></a><a target='_blank' href='{$userurl}'><img src='{$userpic}'  width='30' height='30' /><span>{$username}</span></a></div>".replaceWith({
-			id:data.id	
-		})
-	}else{
-		if(data['type']==2){ 
-			vv = "<img  src='http://huaworld.sinaapp.com/images/VideoIndicator.png' style='width: 50px;height: 50px;position: absolute;left: 78px;top: 54px;border: 0;' />";
-			
-			wh = ",,width=810,,height=610";
-			
-		}
-		str =   "<div class='pic_item ui-state-default' style='left:{$left}px;top:{$top}px;'><a  {$rel} href='###'><img onclick='view(this)' width='228' height='{$h}' id='img_{$id}' class='scrollLoading' src='{$url}'  />{$vv}<div style='padding: 0 5px;'>{$desc}</div></a></div>";
-	}
+
+
+		str = "<div class='pic_item ui-state-default' style='left:{$left}px;top:{$top}px;width:{$_width}px'><a  {$rel} href='###' ><img onclick='view(this)' width='{$_imgwidth}' height='{$h}' id='img_{$id}' class='scrollLoading' src='{$url}'  />{$vv}<div style='padding: 0 5px;'>{$desc}</div></a></div>";
+
 	var minCol = getMinCol();
 	
-	var _left = _offset?(minCol.col)*237:(index)%arrimg.length*237;
-	
+	var _left = _offset?(minCol.col)*_leftwidth:(index)%arrimg.length*_leftwidth;
+	_left= _left+10;
 	var _top = _offset?minCol.top:(arrimg[(index)%arrimg.length]?(arrimg[(index)%arrimg.length]):0);
 	var str = str.replaceWith({
 		id:data.id,
+		_width:_width,
 		left:_left,
+		_imgwidth:_imgwidth,
 		top:_top,
 		userpic:data.photo,
 		username:data.name,
@@ -116,6 +112,10 @@ function getData(offset,limit,album){
 		url:"http://huaworld.sinaapp.com/getpub.php?offset="+offset+"&limit="+limit+"&_nd="+(+new Date),
 		dataType:'json',
 		success:function(data){
+			if(data.length && !_offset){
+				localStorage.setItem('lastdata',JSON.stringify(data));
+			}
+			
 			for(var i=0;i<data.length;i++){
 				addImg(data[i],i);
 			}
@@ -154,6 +154,7 @@ function pullUpAction () {
 		getData(nextoffset,_limit, _album);
 	}, 1000);
 }
+var _max = 0;
 var beginX=0;
 var beginY=0;
 var endX=0;
@@ -173,13 +174,29 @@ var getScrollLeft = function(node) {
 	return doc.documentElement.scrollLeft || doc.body.scrollLeft;
 };
 function loaded() {
+
 	var icount = parseInt($(window).width()/237);
 	(function(){
 		for(var i = 0 ;i<icount;i++){
 			arrimg.push(0);
 		}
 	})();
-	getData(0,10,0);
+	
+	_max = $(window).width();
+	var ldata = localStorage.getItem('lastdata');
+	if(ldata){
+		ldata = JSON.parse(ldata);
+		for(var i=0;i<ldata.length;i++){
+			addImg(ldata[i],i);
+		}
+		var _height = Math.max.apply(null, [$(window).height(), Math.max.apply(null, arrimg)]);
+		$("#thelist>li").css("height", _height + 100 + 'px');
+		nextoffset = (_offset == 0 ? _limit : _limit + _offset);
+		getData(10,10,0);
+	}else{
+		getData(0,10,0);
+	}
+	
 	
 	/* $(window).scroll(function () {
 		
@@ -379,4 +396,4 @@ function loaded() {
 
 //document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
 
-document.addEventListener('DOMContentLoaded', function () { setTimeout(loaded, 200); }, false);
+document.addEventListener('deviceready', loaded, false);
