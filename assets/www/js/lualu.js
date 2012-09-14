@@ -46,7 +46,7 @@ function fixA(str){
 function view(obj){
 	setTimeout(function(){
 		if (abc) {
-			$('#thelist>li').eq(1).html("<img src='" + obj.src.replace('!192', '') + "'>");
+			$('#thelist>li').eq(1).html("<div class='detail_pic'><img src='" + obj.src.replace('!192', '') + "'></div>");
 			document.getElementById("thelist").style.webkitTransition = "all 0.5s ease-in-out";
 			$('#thelist')[0].style.marginLeft = -$(window).width() + 'px';
 		}
@@ -55,7 +55,7 @@ function view(obj){
 }
 function addImg(data,index){
 	
-	var _imgwidth = _max>350?228:150;
+	var _imgwidth = _max>350?224:150;
 	var _leftwidth = _max>350?237:160;
 	var _width =  _max>350?224:150;
 	var rote = (data.w/_imgwidth);
@@ -67,7 +67,7 @@ function addImg(data,index){
 	playurl ="/play/"+data.id;
 
 
-		str = "<div class='pic_item ui-state-default' style='left:{$left}px;top:{$top}px;width:{$_width}px'><a  {$rel} href='###' ><img onclick='view(this)' width='{$_imgwidth}' height='{$h}' id='img_{$id}' class='scrollLoading' src='{$url}'  />{$vv}<div style='padding: 0 5px;'>{$desc}</div></a></div>";
+		str = "<div class='pic_item' style='left:{$left}px;top:{$top}px;width:{$_width}px'><a  {$rel} href='###' ><img onclick='view(this)' width='{$_imgwidth}' height='{$h}' id='img_{$id}' class='scrollLoading' src='{$url}'  />{$vv}<div class='name'>{$desc}</div><div class='num'>共10张</div></a></div>";
 
 	var minCol = getMinCol();
 	
@@ -178,7 +178,7 @@ function loaded() {
 	var icount = parseInt($(window).width()/237);
 	(function(){
 		for(var i = 0 ;i<icount;i++){
-			arrimg.push(0);
+			arrimg.push(10);
 		}
 	})();
 	
@@ -236,10 +236,10 @@ function loaded() {
 		onRefresh: function () {
 			if (pullDownEl.className.match('loading')) {
 				pullDownEl.className = '';
-				pullDownEl.querySelector('.pullDownLabel').innerHTML = 'Pull down to refresh...';
+				//pullDownEl.querySelector('.pullDownLabel').innerHTML = 'Pull down to refresh...';
 			} else if (pullUpEl.className.match('loading')) {
 				pullUpEl.className = '';
-				pullUpEl.querySelector('.pullUpLabel').innerHTML = 'Pull up to load more...';
+				//pullUpEl.querySelector('.pullUpLabel').innerHTML = 'Pull up to load more...';
 			}
 		},
 		onScrollStart:function(){
@@ -251,19 +251,19 @@ function loaded() {
 			
 			if (this.y > 5 && !pullDownEl.className.match('flip')) {
 				pullDownEl.className = 'flip';
-				pullDownEl.querySelector('.pullDownLabel').innerHTML = 'Release to refresh...';
+				//pullDownEl.querySelector('.pullDownLabel').innerHTML = '往下继续查看...';
 				this.minScrollY = 0;
 			} else if (this.y < 5 && pullDownEl.className.match('flip')) {
 				pullDownEl.className = '';
-				pullDownEl.querySelector('.pullDownLabel').innerHTML = 'Pull down to refresh...';
+				//pullDownEl.querySelector('.pullDownLabel').innerHTML = 'Pull down to refresh...';
 				this.minScrollY = -pullDownOffset;
 			} else if (this.y < (this.maxScrollY - 5) && !pullUpEl.className.match('flip')) {
 				pullUpEl.className = 'flip';
-				pullUpEl.querySelector('.pullUpLabel').innerHTML = 'Release to refresh...';
+				//pullUpEl.querySelector('.pullUpLabel').innerHTML = '往下继续查看...';
 				this.maxScrollY = this.maxScrollY;
 			} else if (this.y > (this.maxScrollY + 5) && pullUpEl.className.match('flip')) {
 				pullUpEl.className = '';
-				pullUpEl.querySelector('.pullUpLabel').innerHTML = 'Pull up to load more...';
+				//pullUpEl.querySelector('.pullUpLabel').innerHTML = 'Pull up to load more...';
 				this.maxScrollY = pullUpOffset;
 			}
 		},
@@ -274,7 +274,7 @@ function loaded() {
 				pullDownAction();	// Execute custom function (ajax call?)
 			} else if (pullUpEl.className.match('flip')) {
 				pullUpEl.className = 'loading';
-				pullUpEl.querySelector('.pullUpLabel').innerHTML = 'Loading...';				
+				//pullUpEl.querySelector('.pullUpLabel').innerHTML = 'Loading...';				
 				pullUpAction();	// Execute custom function (ajax call?)
 			}
 		}
