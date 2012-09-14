@@ -116,7 +116,12 @@ function getData(offset,limit,album){
 		url:"http://huaworld.sinaapp.com/getpub.php?offset="+offset+"&limit="+limit+"&_nd="+(+new Date),
 		dataType:'json',
 		success:function(data){
-			document.body.innerHTML = data;
+			for(var i=0;i<data.length;i++){
+				addImg(data[i],i);
+			}
+			var _height = Math.max.apply(null, [$(window).height(), Math.max.apply(null, arrimg)]);
+			$("#thelist>li").css("height", _height + 100 + 'px');
+			nextoffset = (_offset == 0 ? _limit : _limit + _offset);
 		}
 	});
 	//uexXmlHttpMgr.open("1", "GET", );
@@ -168,25 +173,12 @@ var getScrollLeft = function(node) {
 	return doc.documentElement.scrollLeft || doc.body.scrollLeft;
 };
 function loaded() {
-	document.body.innerHTML = 'ddd';
-//	if(localStorage.getItem('lastdata')){
-//		
-//		httpSuccess(0,0,localStorage.getItem('lastdata'));
-//		
-//	}
-	//alert("loaded");
-	//uexXmlHttpMgr.onData = httpSuccess;
-	
 	var icount = parseInt($(window).width()/237);
 	(function(){
 		for(var i = 0 ;i<icount;i++){
 			arrimg.push(0);
 		}
 	})();
-
-	
-
-
 	getData(0,10,0);
 	
 	/* $(window).scroll(function () {
@@ -218,10 +210,10 @@ function loaded() {
 		item.style.width = $(window).width() + 'px';
 		item.style.overflowX = 'hidden';
 	});
-	//pullDownEl.style.height="0px";
-	//pullUpEl.style.height="0px";
+	$('#content1').css('height',($(window).height()-$('footer').height()-$('header').height()-12)+'px');
+
 	myScroll = new iScroll('wrapper', {
-		useTransition: true,
+	
 		checkDOMChanges: true,
 		topOffset: pullDownOffset,
 		onRefresh: function () {
@@ -271,7 +263,7 @@ function loaded() {
 		}
 	});
 	
-	setTimeout(function () { document.getElementById('wrapper').style.left = '0'; }, 800);
+	setTimeout(function () { document.getElementById('wrapper').style.left = '0';}, 800);
 	
 	
 

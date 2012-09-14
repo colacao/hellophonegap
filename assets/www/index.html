@@ -2,13 +2,41 @@
 <html>
 <head>
 <title>PhoneGap</title>
-
+<link rel="stylesheet" href="css/all.css" />
 <script type="text/javascript" charset="utf-8" src="js/phonegap.js"></script>
 <script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
 <script type="text/javascript" src="js/common.js"></script>	
+<script type="text/javascript" src="js/iscroll.js"></script>	
 <script src="js/lualu.js"></script>
 </head>
 <body>
-<h1>Hello World1</h1>
+			<header>
+					<a class="link_back" href="###"></a>
+					luAlu
+					<a class="link_refresh" href="###"></a>
+			</header>
+			<div id="wrapper">
+				<div id="scroller">
+					<div id="pullDown">
+						<span class="pullDownIcon"></span><span class="pullDownLabel">Pull down to refresh...</span>
+					</div>
+					<ul id="thelist" style="position: relative;">
+						<li id="content1" style="float:left;">
+							
+						</li>
+						<li style="float:left;">
+							
+						</li>
+					</ul>
+					<div id="pullUp" >
+						<span class="pullUpIcon "></span><span class="pullUpLabel">Pull up to refresh...</span>
+					</div>
+				</div>
+			</div>
+			<footer style="position: fixed; left: 0px; bottom: 0px;z-index:999">
+				<a href="###"><span class="icon_tag"></span></a>
+				<a href="###"><span class="icon_fav"></span></a>
+				<a href="###"><span class="icon_list"></span></a>
+			</footer>		
 </body>
 </html>
