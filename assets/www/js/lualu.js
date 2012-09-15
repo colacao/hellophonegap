@@ -193,6 +193,7 @@ function viewfav(){
 	var favdata = localStorage.getItem('favdata');
 	if(favdata){
 		$('#thelist>li:eq(0)').html('');
+		document.getElementById("thelist").style.marginLeft ='0px' ;
 		_max = document.documentElement.offsetWidth;
 		var _fixMargin=10;
 		
