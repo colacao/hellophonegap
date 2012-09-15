@@ -28,7 +28,7 @@ function fixA(str){
 function view(obj){
 	setTimeout(function(){
 		if (abc) {
-			$('#thelist>li').eq(1).html("<div class='detail_pic'><img width="+_max+" src='" + obj.src + "'></div>");
+			$('#thelist>li').eq(1).html("<div class='detail_pic'><img _id="+ obj.id.replace('img_','') +" width="+_max+" src='" + obj.src + "'></div>");
 			document.getElementById("thelist").style.webkitTransition = "all 0.2s ease";
 			$('#thelist')[0].style.marginLeft = -$(window).width() + 'px';
 
@@ -180,6 +180,59 @@ function pullDownAction () {
 		setTimeout(function () {
 			myScroll.refresh();
 		}, 1000);
+}
+function def(){
+	$('#thelist>li:eq(0)').html('');
+		
+	arrimg=[];
+		myScroll.scrollTo(0,0);
+		loaded()
+	
+}
+function viewfav(){
+	var favdata = localStorage.getItem('favdata');
+	if(favdata){
+		$('#thelist>li:eq(0)').html('');
+		_max = document.documentElement.offsetWidth;
+		var _fixMargin=10;
+		
+		var _leftwidth = _max>350?224+_fixMargin:145+_fixMargin;
+		
+		arrimg=[];
+		var icount = parseInt($(window).width()/_leftwidth);
+		(function(){
+			for(var i = 0 ;i<icount;i++){
+				arrimg.push(10);
+			}
+		})();
+	
+	
+		myScroll.scrollTo(0,0);
+		favdata = JSON.parse(favdata);
+		for(var i=0;i<favdata.length;i++){
+			addImg(favdata[i],i);
+		}
+	}
+}
+function fav(){
+	var id = $('#thelist>li:eq(1) img').attr('_id');
+
+	if(id){
+		$.ajax({
+			url:"http://huaworld.sinaapp.com/getlualubyid.php?id="+id,
+			dataType:'json',
+			success:function(data){
+				var favdata = localStorage.getItem('favdata');
+				favdata= JSON.parse(favdata)||[];
+				for(var i=0;i<data.length;i++){
+					favdata.push(data[i])
+				}
+				localStorage.setItem('favdata',JSON.stringify(favdata));
+			
+				
+			}
+		});
+	}
 }
 
 function pullUpAction () {
