@@ -31,7 +31,7 @@ function view(obj){
 			$('#thelist>li').eq(1).html("<div class='detail_pic'><img _id="+ obj.id.replace('img_','') +" width="+_max+" src='" + obj.src + "'></div>");
 			document.getElementById("thelist").style.webkitTransition = "all 0.2s ease";
 			$('#thelist')[0].style.marginLeft = -$(window).width() + 'px';
-
+	
 			setTimeout(function(){
 				$('#thelist>li').eq(1).find('img').attr('src',obj.src.replace('!192', '').replace('!60', ''));
 				myScroll.scrollTo(0,0);
@@ -183,9 +183,10 @@ function pullDownAction () {
 }
 function def(){
 	$('#thelist>li:eq(0)').html('');
-		
+	document.getElementById("thelist").style.marginLeft ='0px' ;
 	arrimg=[];
 		myScroll.scrollTo(0,0);
+		myScroll.destroy();
 		loaded()
 	
 }
